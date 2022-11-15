@@ -1,7 +1,7 @@
 message = input(">")
 words = message.split(' ')
-emonjis ={
-    ":)":"**",
+emonjis = {
+    ":)": "**",
     ":(": "??"
 }
 output = ""
