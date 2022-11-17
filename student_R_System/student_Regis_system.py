@@ -2,6 +2,7 @@ from tkinter import *
 from datetime import date
 from tkinter import filedialog
 from tkinter import messagebox
+from PIL import Image, ImageTk
 import os
 from tkinter.ttk import Combobox
 import openpyxl, xlrd
@@ -41,11 +42,68 @@ else:
     file.save('Student_data.xlsx')
 
 
-# Exit window
+# #############################Exit window#####################
 def Exit():
     root.destroy()
 
-#
+
+# #########################ShowImage##########################
+def showimage():
+    global filename
+    global img
+    filename = filedialog.askopenfilename(initialdir=os.getcwd(),
+                                          title="Select image file", filetypes=(
+            ("JPG File", "*.jpg"),
+            ("PNG File", "(*.png"),
+            ("All files", "*.txt")
+        ))
+
+    img = (Image.open(filename))
+    resized_image = img.resize((190, 190))
+    photo2 = ImageTk.PhotoImage(resized_image)
+    lb1.config(image=photo2)
+    lb1.image = photo2
+
+
+# ################ Registration NO. ##############
+# now each time we have to enter registration no.
+# lets design automatic registration no. entry system
+
+def registration_no():
+    file = openpyxl.load_workbook('Student_data.xlsx')
+    sheet = file.active
+    row = sheet.max_row
+
+    max_row_value = sheet.cell(row=row, column=1).value
+
+    try:
+        Registration.set(max_row_value + 1)
+    except:
+        Registration.set("1")
+
+
+# ################## Clear ###############################
+def Clear():
+    global img
+    Name.set("")
+    DOB.set('')
+    Religion.set('')
+    Skill.set('')
+    F_Name.set('')
+    M_Name.set('')
+    Father_Occupation.set('')
+    Mother_Occupation.set('')
+    Class.set("Select Class")
+
+    registration_no()
+
+    saveButton.config(state='normal')
+
+    img1=PhotoImage(file='photo.png')
+    lb1.config(image=img1)
+    lb1.image=img1
+
+    img = ""
 
 
 # gender
@@ -85,7 +143,7 @@ Date = StringVar()
 reg_entry = Entry(root, textvariable=Registration, width=15, font="arial 10")
 reg_entry.place(x=160, y=150)
 
-# registration_no()
+registration_no()  # called it here
 
 today = date.today()
 d1 = today.strftime("%d/%m/%Y")
@@ -175,10 +233,11 @@ lb1 = Label(f, bg="black", image=img)
 lb1.place(x=0, y=0)
 
 # button
-Button(root, text="Upload", width=19, height=2, font="arial 12 bold", bg="lightblue").place(x=1000, y=370)
+Button(root, text="Upload", width=19, height=2, font="arial 12 bold", bg="lightblue", command=showimage).place(x=1000,
+                                                                                                               y=370)
 saveButton = Button(root, text="save", width=19, height=2, font="arial 12 bold", bg="lightgreen")
 saveButton.place(x=1000, y=450)
-Button(root, text="Reset", width=19, height=2, font="arial 12 bold", bg="lightpink").place(x=1000, y=530)
+Button(root, text="Reset", width=19, height=2, font="arial 12 bold", bg="lightpink" , command=Clear).place(x=1000, y=530)
 Button(root, text="Exit", width=19, height=2, font="arial 12 bold", bg="grey", command=Exit).place(x=1000, y=610)
 
 root.mainloop()
